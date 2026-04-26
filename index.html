@@ -2004,41 +2004,27 @@
               </p>
             </div>
 
-            <div
-              class="flex items-center justify-center gap-3 w-full md:w-auto"
-            >
-              <button
-                onclick="openGeoQuestMap()"
-                class="btn-25d bg-indigo-600 text-white px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-[0_3px_0_#3730a3] hover:bg-indigo-500 transition-all border border-indigo-400 group flex-1 md:flex-none"
-              >
-                <i
-                  data-lucide="radar"
-                  class="w-4 h-4 group-hover:animate-ping"
-                ></i>
-                <span class="font-bold text-xs uppercase tracking-wider"
-                  >Geo-Radar</span
-                >
-              </button>
-              <input
-                type="file"
-                id="direct-qr-upload"
-                accept="image/*"
-                class="hidden"
-                onchange="directScanImageFile(event)"
-              />
-              <button
-                onclick="startScanner()"
-                class="btn-25d bg-slate-900 text-white px-4 py-2.5 rounded-xl flex items-center justify-center shadow-[0_3px_0_#000] hover:bg-slate-800 transition-all group shrink-0"
-              >
-                <i data-lucide="camera" class="w-4 h-4"></i>
-              </button>
-              <button
-                onclick="document.getElementById('direct-qr-upload').click()"
-                class="btn-25d bg-amber-400 text-amber-900 px-4 py-2.5 rounded-xl flex items-center justify-center shadow-[0_3px_0_#b45309] border border-amber-600 hover:bg-amber-300 transition-all shrink-0"
-              >
-                <i data-lucide="image-plus" class="w-4 h-4"></i>
-              </button>
-            </div>
+            <div class="flex flex-wrap items-center justify-center gap-3 w-full md:w-auto mt-4 md:mt-0">
+  
+  <button onclick="goToHome()" class="btn-25d bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-[0_3px_0_#cbd5e1] hover:shadow-[0_1px_0_#cbd5e1] hover:translate-y-[2px] transition-all border border-slate-200 group shrink-0">
+    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+    <span class="font-bold text-xs uppercase tracking-wider hidden sm:inline">กลับหน้าแรก</span>
+  </button>
+
+  <button onclick="openGeoQuestMap()" class="btn-25d bg-indigo-600 text-white px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-[0_3px_0_#3730a3] hover:bg-indigo-500 transition-all border border-indigo-400 group flex-1 md:flex-none">
+    <i data-lucide="radar" class="w-4 h-4 group-hover:animate-ping"></i>
+    <span class="font-bold text-xs uppercase tracking-wider">Geo-Radar</span>
+  </button>
+
+  <input type="file" id="direct-qr-upload" accept="image/*" class="hidden" onchange="directScanImageFile(event)" />
+  <button onclick="startScanner()" class="btn-25d bg-slate-900 text-white px-4 py-2.5 rounded-xl flex items-center justify-center shadow-[0_3px_0_#000] hover:bg-slate-800 transition-all group shrink-0" title="เปิดกล้องสแกน">
+    <i data-lucide="camera" class="w-4 h-4"></i>
+  </button>
+  <button onclick="document.getElementById('direct-qr-upload').click()" class="btn-25d bg-amber-400 text-amber-900 px-4 py-2.5 rounded-xl flex items-center justify-center shadow-[0_3px_0_#b45309] border border-amber-600 hover:bg-amber-300 transition-all shrink-0" title="อัปโหลดรูปลายแทง">
+    <i data-lucide="image-plus" class="w-4 h-4"></i>
+  </button>
+  
+</div>
           </div>
 
           <div class="mb-8 w-full">

@@ -56,10 +56,13 @@ var trs_quests = [];
 var trs_myTreasures = [];
 var trs_scanner = null;
 
-// ==========================================
-// 🌟 1. ระบบเริ่มต้น
-// ==========================================
+// 👇 เพิ่มตัวแปรเช็คสถานะไว้ด้านนอก
+let isTreasureLoaded = false; 
+
 window.initTreasureHunt = async function() {
+    // 👇 ถ้าเคยโหลดภารกิจมาแล้ว ให้ข้ามไปเลย ไม่ต้องร่ายเวทย์ 4 วินาทีซ้ำ
+    if (isTreasureLoaded) return; 
+
     if (typeof lucide !== 'undefined') lucide.createIcons();
     
     if(!document.getElementById('trs-style')) {
@@ -76,6 +79,9 @@ window.initTreasureHunt = async function() {
     }
     trs_user = JSON.parse(session);
     await trs_loadData();
+
+    // 👇 บันทึกว่าโหลดเสร็จเรียบร้อยแล้ว
+    isTreasureLoaded = true; 
 };
 
 async function trs_loadData() {
@@ -144,14 +150,43 @@ function trs_renderUI() {
             let coverBg = quest.cover_url ? `background-image: url('${quest.cover_url}'); background-size: cover; background-position: center;` : `background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);`;
             completedHTML += `<div class="relative rounded-[2rem] overflow-hidden shadow-[0_10px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] hover:-translate-y-2 transition-all duration-500 cursor-pointer group aspect-[4/5] border-2 border-amber-300/50 hover:border-amber-400 bg-slate-900"><div class="absolute inset-0 transition-transform duration-700 group-hover:scale-110 opacity-90" style="${coverBg}"></div><div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent opacity-90 group-hover:opacity-80 transition-opacity duration-500"></div><div class="absolute inset-0 overflow-hidden rounded-[2rem] z-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"><div class="absolute top-0 left-[-150%] w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 animate-legendary-shine"></div></div><div class="absolute inset-0 p-4 flex flex-col items-center justify-end text-center z-10 pb-5"><div class="absolute top-3 right-3 bg-black/40 backdrop-blur-md rounded-full p-2 border border-white/10 shadow-sm group-hover:rotate-12 transition-transform"><i data-lucide="gem" class="w-4 h-4 text-amber-300"></i></div>${!quest.cover_url ? `<div class="w-14 h-14 bg-gradient-to-br from-yellow-300 to-amber-500 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.6)] mb-auto mt-6 border-2 border-white/80 group-hover:scale-110 transition-transform duration-500"><i data-lucide="crown" class="w-7 h-7 text-white drop-shadow-md"></i></div>` : `<div class="mt-auto"></div>`}<div class="w-full transform group-hover:-translate-y-1 transition-transform duration-500"><h3 class="font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-300 to-yellow-500 text-lg leading-tight line-clamp-2 drop-shadow-[0_4px_4px_rgba(0,0,0,0.9)] mb-3">${quest.title}</h3><div class="inline-flex items-center gap-1.5 text-[9px] font-black text-amber-950 bg-gradient-to-r from-yellow-300 to-amber-500 px-3 py-1.5 rounded-full uppercase tracking-widest shadow-[0_0_15px_rgba(245,158,11,0.5)] border border-yellow-200/50"><i data-lucide="sparkles" class="w-3 h-3"></i> สมบัติระดับตำนาน</div></div></div></div>`;
         } else {
-            const pct = Math.round((collectedPieces.length / quest.total_pieces) * 100);
-            let coverHtml = '';
-            if (quest.cover_url) { coverHtml = `<div class="flex gap-4 items-center mb-4"><div class="w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-[1rem] overflow-hidden shadow-sm border border-slate-100 relative"><img src="${quest.cover_url}" class="w-full h-full object-cover"><div class="absolute inset-0 bg-slate-900/5 mix-blend-overlay"></div></div><div class="flex-1 min-w-0"><h3 class="font-bold text-slate-800 text-lg sm:text-xl leading-tight line-clamp-2 mb-2">${quest.title}</h3><span class="inline-flex text-[10px] font-black text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-100">สะสม ${collectedPieces.length}/${quest.total_pieces} ชิ้น</span></div></div>`; } else { coverHtml = `<div class="flex justify-between items-center mb-4"><h3 class="font-bold text-slate-800 text-lg sm:text-xl truncate pr-2">${quest.title}</h3><span class="text-[10px] font-black text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-100 shrink-0">สะสม ${collectedPieces.length}/${quest.total_pieces} ชิ้น</span></div>`; }
-            let galleryHtml = '<div class="flex gap-3 mt-4 overflow-x-auto custom-scrollbar pb-3">';
-            for(let i = 1; i <= quest.total_pieces; i++) { let isFound = collectedPieces.includes(i); let defaultImg = `https://ui-avatars.com/api/?name=${i}&background=fef3c7&color=d97706&size=128&font-size=0.5`; let imgUrl = (quest.piece_images && quest.piece_images[i-1]) ? quest.piece_images[i-1] : defaultImg; if(isFound) { galleryHtml += `<div class="w-14 h-14 shrink-0 rounded-[14px] overflow-hidden border-[3px] border-amber-400 shadow-md relative group"><img src="${imgUrl}" class="w-full h-full object-cover group-hover:scale-110 transition-transform"><div class="absolute inset-0 bg-amber-500/20 mix-blend-overlay"></div></div>`; } else { galleryHtml += `<div class="w-14 h-14 shrink-0 rounded-[14px] bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center shadow-inner"><i data-lucide="lock" class="w-5 h-5 text-slate-300"></i></div>`; } } galleryHtml += '</div>';
-            let actionBtn = ''; if (collectedPieces.length === quest.total_pieces) { actionBtn = `<button onclick="combineTreasure('${quest.id}', '${quest.title}')" class="w-full mt-4 bg-gradient-to-r from-amber-400 to-orange-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-orange-200 animate-pulse flex items-center justify-center gap-2 uppercase tracking-widest"><i data-lucide="sparkles" class="w-4 h-4"></i> รวมชิ้นส่วนเป็นสมบัติ!</button>`; }
-            activeHTML += `<div class="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm relative group hover:border-amber-300 transition-colors">${coverHtml}<div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden shadow-inner mt-2 mb-2"><div class="bg-gradient-to-r from-amber-400 to-orange-500 h-full rounded-full transition-all duration-700" style="width: ${pct}%"></div></div>${galleryHtml}${actionBtn}</div>`;
+    const pct = Math.round((collectedPieces.length / quest.total_pieces) * 100);
+    let coverHtml = '';
+    
+    if (quest.cover_url) { 
+        coverHtml = `<div class="flex gap-4 items-center mb-4"><div class="w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-[1rem] overflow-hidden shadow-sm border border-slate-100 relative"><img src="${quest.cover_url}" class="w-full h-full object-cover"><div class="absolute inset-0 bg-slate-900/5 mix-blend-overlay"></div></div><div class="flex-1 min-w-0"><h3 class="font-bold text-slate-800 text-lg sm:text-xl leading-tight line-clamp-2 mb-2">${quest.title}</h3><span class="inline-flex text-[10px] font-black text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-100">สะสม ${collectedPieces.length}/${quest.total_pieces} ชิ้น</span></div></div>`; 
+    } else { 
+        coverHtml = `<div class="flex justify-between items-center mb-4"><h3 class="font-bold text-slate-800 text-lg sm:text-xl truncate pr-2">${quest.title}</h3><span class="text-[10px] font-black text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-100 shrink-0">สะสม ${collectedPieces.length}/${quest.total_pieces} ชิ้น</span></div>`; 
+    }
+    
+    let galleryHtml = '<div class="flex gap-3 mt-4 overflow-x-auto custom-scrollbar pb-3">';
+    
+    for(let i = 1; i <= quest.total_pieces; i++) { 
+        let isFound = collectedPieces.includes(i); 
+        let defaultImg = `https://ui-avatars.com/api/?name=${i}&background=fef3c7&color=d97706&size=128&font-size=0.5`; 
+        
+        // 🟢 เปลี่ยนวิธีดึงรูปตรงนี้ ให้รองรับ Data โครงสร้างใหม่
+        let imgUrl = defaultImg;
+        if (quest.piece_images && quest.piece_images[i-1]) {
+            let piece = quest.piece_images[i-1];
+            imgUrl = (typeof piece === 'object') ? (piece.url || defaultImg) : piece;
         }
+        
+        if(isFound) { 
+            galleryHtml += `<div class="w-14 h-14 shrink-0 rounded-[14px] overflow-hidden border-[3px] border-amber-400 shadow-md relative group"><img src="${imgUrl}" class="w-full h-full object-cover group-hover:scale-110 transition-transform"><div class="absolute inset-0 bg-amber-500/20 mix-blend-overlay"></div></div>`; 
+        } else { 
+            galleryHtml += `<div class="w-14 h-14 shrink-0 rounded-[14px] bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center shadow-inner"><i data-lucide="lock" class="w-5 h-5 text-slate-300"></i></div>`; 
+        } 
+    } 
+    galleryHtml += '</div>';
+    
+    let actionBtn = ''; 
+    if (collectedPieces.length === quest.total_pieces) { 
+        actionBtn = `<button onclick="combineTreasure('${quest.id}', '${quest.title}')" class="w-full mt-4 bg-gradient-to-r from-amber-400 to-orange-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-orange-200 animate-pulse flex items-center justify-center gap-2 uppercase tracking-widest"><i data-lucide="sparkles" class="w-4 h-4"></i> รวมชิ้นส่วนเป็นสมบัติ!</button>`; 
+    }
+    
+    activeHTML += `<div class="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm relative group hover:border-amber-300 transition-colors">${coverHtml}<div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden shadow-inner mt-2 mb-2"><div class="bg-gradient-to-r from-amber-400 to-orange-500 h-full rounded-full transition-all duration-700" style="width: ${pct}%"></div></div>${galleryHtml}${actionBtn}</div>`;
+}
     });
 
     activeContainer.innerHTML = activeHTML || '<div class="text-center py-6 text-slate-400 text-sm">ไม่มีภารกิจใหม่ในขณะนี้</div>';
@@ -419,7 +454,12 @@ function trs_showFoundModal(quest, pieceNum) {
     document.getElementById('found-piece-num').textContent = pieceNum; 
     document.getElementById('found-quest-title').textContent = quest.title; 
     let defaultImg = `https://ui-avatars.com/api/?name=${pieceNum}&background=fef3c7&color=d97706&size=512&font-size=0.5`; 
-    document.getElementById('found-piece-img').src = (quest.piece_images && quest.piece_images[pieceNum-1]) ? quest.piece_images[pieceNum-1] : defaultImg; 
+    let modalImgUrl = defaultImg;
+if (quest.piece_images && quest.piece_images[pieceNum-1]) {
+    let piece = quest.piece_images[pieceNum-1];
+    modalImgUrl = (typeof piece === 'object') ? (piece.url || defaultImg) : piece;
+}
+document.getElementById('found-piece-img').src = modalImgUrl;
     const modal = document.getElementById('piece-found-modal'); 
     const box = document.getElementById('piece-found-box'); 
     if(modal && box) {

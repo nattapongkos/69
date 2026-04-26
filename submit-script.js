@@ -413,14 +413,16 @@ function switchTab(tab) {
   const targetPanel = document.getElementById(`panel-${tab}`);
   if (targetPanel) {
     targetPanel.classList.remove("hidden");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  // 4. จัดการปุ่มย้อนกลับ (Back Button)
-  const backBtn = document.getElementById("btn-back-home");
-  if (backBtn) {
-    if (tab === "home") backBtn.classList.add("hidden");
-    else backBtn.classList.remove("hidden");
+    
+    // 🟢 สั่งให้กล่อง #app เลื่อนขึ้นบนสุด (หน่วงเวลาเล็กน้อยให้หน้าเว็บวาดเสร็จก่อน)
+    setTimeout(() => {
+        const appContainer = document.getElementById("app");
+        if (appContainer) {
+            appContainer.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    }, 50);
   }
 
   // 5. อัปเดต Title
@@ -440,7 +442,7 @@ function switchTab(tab) {
   if (tab === "submit") switchSubTab("form");
   if (tab === "halloffame") renderHallOfFame();
   if (tab === "logo-shop" && typeof switchAuctionTab === "function") switchAuctionTab("market");
-
+  if (tab === "treasure" && typeof initTreasureHunt === "function") initTreasureHunt();
   if (typeof lucide !== "undefined") lucide.createIcons();
 }
 
