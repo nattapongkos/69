@@ -1,10 +1,8 @@
 // =====================================================
 // 🔧 Student Portal — Service Worker (PWA)
-// เพิ่ม version เมื่อแก้ไขไฟล์ เพื่อให้ cache อัปเดต
 // =====================================================
 const CACHE_NAME = "student-portal-v4";
 
-// 🟢 เปลี่ยน /wkk-learning/ เป็น /69/ ทั้งหมด
 const STATIC_ASSETS = [
   "./index.html",
   "./submit-script.js",
@@ -15,60 +13,46 @@ const STATIC_ASSETS = [
   "https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap",
 ];
 
-// =====================================================
-// 1. INSTALL — ดาวน์โหลด static assets ครั้งแรก
-// =====================================================
+// 1. INSTALL — ดาวน์โหลด static assets
 self.addEventListener("install", (event) => {
   console.log("[SW] Installing...");
+  self.skipWaiting(); // บังคับให้อัปเดต SW ทันที
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      // addAll จะ fail ถ้าไฟล์ใดไฟล์หนึ่งโหลดไม่ได้
-      // ใช้ add ทีละไฟล์แทนเพื่อความปลอดภัย
       return Promise.allSettled(
         STATIC_ASSETS.map((url) =>
           cache.add(url).catch((err) => {
-            console.warn("[SW] Could not cache:", url, err);
+            console.error("[SW] Failed to cache:", url, err);
           })
         )
       );
-    }).then(() => {
-      console.log("[SW] Install complete");
-      return self.skipWaiting(); // ให้ SW ใหม่เข้าควบคุมทันที ไม่ต้องรอปิด tab
     })
   );
 });
 
-// =====================================================
-// 2. ACTIVATE — ลบ cache เก่าออก
-// =====================================================
+// 2. ACTIVATE — ลบแคชเวอร์ชันเก่าทิ้ง
 self.addEventListener("activate", (event) => {
   console.log("[SW] Activating...");
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys
-          .filter((key) => key !== CACHE_NAME)
-          .map((key) => {
-            console.log("[SW] Deleting old cache:", key);
-            return caches.delete(key);
-          })
-      )
-    ).then(() => {
-      console.log("[SW] Activate complete");
-      return self.clients.claim(); // ควบคุม tab ที่เปิดอยู่ทันที
-    })
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            console.log("[SW] Deleting old cache:", cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
   );
 });
 
-// =====================================================
-// 3. FETCH — กลยุทธ์การโหลด
-// =====================================================
+// 3. FETCH — ดึงข้อมูลจาก Network หรือ Cache
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
-  // ❌ ไม่ cache: Firebase, Google APIs
+  // ข้ามการแคชสำหรับ API หรือ Database ภายนอก
   const skipCache =
-    url.hostname.includes("firestore.googleapis.com") ||
     url.hostname.includes("firebasedatabase.app") ||
     url.hostname.includes("googleapis.com") ||
     url.hostname.includes("script.google.com") ||
@@ -95,23 +79,12 @@ self.addEventListener("fetch", (event) => {
           if (cachedResponse) {
             return cachedResponse;
           }
-          // 🟢 ถ้าออฟไลน์ ให้เปิดหน้า index.html จากโฟลเดอร์ /69/
+          // หากออฟไลน์และเป็นการขอไฟล์ HTML ให้คืนค่าหน้า index.html
           if (event.request.destination === "document") {
-           return caches.match("./index.html");
+            return caches.match("./index.html"); 
           }
-          
-          // 🟢 ดัก Error: Failed to convert value to 'Response'
           return new Response('', { status: 404, statusText: 'Not Found' });
         });
       })
   );
-});
-
-// =====================================================
-// 4. รับ message จากหน้าเว็บ (เช่น สั่ง skip cache)
-// =====================================================
-self.addEventListener("message", (event) => {
-  if (event.data === "SKIP_WAITING") {
-    self.skipWaiting();
-  }
 });
