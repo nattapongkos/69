@@ -3523,12 +3523,13 @@
     <script src="logo-shop-script.js?v=106"></script>
     <script src="treasure-student.js?v=106"></script>
     <script src="daily-quest.js"></script>
-    <script>
+    
+
+  <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    // 🟢 แก้ไข: ระบุ Path เต็มไปที่ /69/ เพื่อให้เบราว์เซอร์หาไฟล์เจอแน่นอน
-    // และใส่ Scope ครอบคลุมโฟลเดอร์ /69/ ทั้งหมด
-    navigator.serviceWorker.register('/69/service-worker.js', { scope: '/69/' })
+    // ใช้ Relative path (./) เพื่อให้อ้างอิงจากโฟลเดอร์ปัจจุบันเสมอ ไม่ว่าชื่อโฟลเดอร์จะเปลี่ยนเป็นอะไร
+    navigator.serviceWorker.register('./service-worker.js', { scope: './' })
       .then((reg) => {
         console.log('[PWA] Service Worker registered:', reg.scope);
 
@@ -3537,7 +3538,7 @@ if ('serviceWorker' in navigator) {
           const newWorker = reg.installing;
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // แจ้งเตือนเมื่อมีเวอร์ชันใหม่ (เรียกใช้ฟังก์ชัน showToast ที่คุณมีอยู่)
+              // แจ้งเตือนเมื่อมีเวอร์ชันใหม่
               if (typeof showToast === 'function') {
                 showToast('มีการอัปเดตระบบ — กดรีเฟรชเพื่อใช้เวอร์ชันใหม่ 🔄', 'info');
               }
@@ -3551,6 +3552,8 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+
+
     <script>
     // ==========================================
     // 🔢 ระบบ PIN Box — กรอกทีละช่อง

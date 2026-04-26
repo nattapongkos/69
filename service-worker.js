@@ -1,7 +1,7 @@
 // =====================================================
 // 🔧 Student Portal — Service Worker (PWA)
 // =====================================================
-const CACHE_NAME = "student-portal-v6";
+const CACHE_NAME = "student-portal-v7";
 
 const STATIC_ASSETS = [
   "./index.html",
