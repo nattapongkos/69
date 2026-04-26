@@ -103,7 +103,7 @@ self.addEventListener("fetch", (event) => {
           }
           // ไม่มีทั้งเน็ตและ cache → แสดงหน้า offline
           if (event.request.destination === "document") {
-            return caches.match("/wkk-learning/index.html");
+            return caches.match("/69/index.html");
           }
         });
       })
