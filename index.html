@@ -3528,10 +3528,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    // ระบุ scope และ path ให้ชี้มาที่ /wkk/
-    // ✅ ลบ SW เก่าที่ scope ผิดออกอัตโนมัติ
-if ('serviceWorker' in navigator) {
+  // ✅ ลบ SW เก่าที่ scope ผิดออกก่อน
   navigator.serviceWorker.getRegistrations().then(registrations => {
     registrations.forEach(reg => {
       if (!reg.scope.includes('/wkk/')) {
@@ -3540,17 +3537,16 @@ if ('serviceWorker' in navigator) {
       }
     });
   });
-}
+
+  window.addEventListener('load', () => {
     navigator.serviceWorker.register('/wkk/service-worker.js', { scope: '/wkk/' })
       .then((reg) => {
         console.log('[PWA] Service Worker registered:', reg.scope);
 
-        // ตรวจสอบการอัปเดต Service Worker
         reg.addEventListener('updatefound', () => {
           const newWorker = reg.installing;
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // แจ้งเตือนเมื่อมีเวอร์ชันใหม่
               if (typeof showToast === 'function') {
                 showToast('มีการอัปเดตระบบ — กดรีเฟรชเพื่อใช้เวอร์ชันใหม่ 🔄', 'info');
               }
