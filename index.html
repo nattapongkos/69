@@ -17,7 +17,8 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
-    
+    <link rel="icon" href="/wkk/icons/icon-192.png" type="image/png" />
+
     <link
       href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
@@ -3522,13 +3523,24 @@
     <script src="submit-script.js?v=106"></script>
     <script src="logo-shop-script.js?v=106"></script>
     <script src="treasure-student.js?v=106"></script>
-    <script src="daily-quest.js"></script>
     
+    <script src="daily-quest.js?v=106"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     // ระบุ scope และ path ให้ชี้มาที่ /wkk/
+    // ✅ ลบ SW เก่าที่ scope ผิดออกอัตโนมัติ
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    registrations.forEach(reg => {
+      if (!reg.scope.includes('/wkk/')) {
+        reg.unregister();
+        console.log('[PWA] Unregistered old SW:', reg.scope);
+      }
+    });
+  });
+}
     navigator.serviceWorker.register('/wkk/service-worker.js', { scope: '/wkk/' })
       .then((reg) => {
         console.log('[PWA] Service Worker registered:', reg.scope);
