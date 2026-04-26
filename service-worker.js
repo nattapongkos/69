@@ -2,15 +2,14 @@
 // 🔧 Student Portal — Service Worker (PWA)
 // เพิ่ม version เมื่อแก้ไขไฟล์ เพื่อให้ cache อัปเดต
 // =====================================================
-const CACHE_NAME = "student-portal-v1";
+const CACHE_NAME = "student-portal-v3";
 
-// ไฟล์ที่ cache ไว้ให้ใช้งาน offline ได้เลย
+// 🟢 เปลี่ยน /wkk-learning/ เป็น /69/ ทั้งหมด
 const STATIC_ASSETS = [
-  "/wkk-learning/index.html",
-  "/wkk-learning/submit-script.js",
-  "/wkk-learning/submit-style.css",
-  "/wkk-learning/manifest.json",
-  // CDN ที่ใช้บ่อย — cache ไว้ด้วย
+  "/69/index.html",
+  "/69/submit-script.js",
+  "/69/submit-style.css",
+  "/69/manifest.json",
   "https://cdn.tailwindcss.com",
   "https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js",
   "https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap",
@@ -67,7 +66,7 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
-  // ❌ ไม่ cache: Firebase, Google APIs (ต้องการข้อมูล real-time)
+  // ❌ ไม่ cache: Firebase, Google APIs
   const skipCache =
     url.hostname.includes("firestore.googleapis.com") ||
     url.hostname.includes("firebasedatabase.app") ||
@@ -77,15 +76,12 @@ self.addEventListener("fetch", (event) => {
     event.request.method !== "GET";
 
   if (skipCache) {
-    return; // ให้ browser จัดการเองตามปกติ
+    return;
   }
 
-  // ✅ กลยุทธ์: Network First (ลองดึงจากเน็ตก่อน ถ้าไม่มีสัญญาณ ใช้ cache)
-  // เหมาะกับ app ที่ข้อมูลเปลี่ยนบ่อย
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => {
-        // โหลดจากเน็ตได้ → บันทึกลง cache ด้วย
         if (networkResponse && networkResponse.status === 200) {
           const responseClone = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -95,16 +91,17 @@ self.addEventListener("fetch", (event) => {
         return networkResponse;
       })
       .catch(() => {
-        // เน็ตหาย → ดึงจาก cache
         return caches.match(event.request).then((cachedResponse) => {
           if (cachedResponse) {
-            console.log("[SW] Serving from cache:", event.request.url);
             return cachedResponse;
           }
-          // ไม่มีทั้งเน็ตและ cache → แสดงหน้า offline
+          // 🟢 ถ้าออฟไลน์ ให้เปิดหน้า index.html จากโฟลเดอร์ /69/
           if (event.request.destination === "document") {
-            return caches.match("/69/index.html");
+            return caches.match("/69/index.html"); 
           }
+          
+          // 🟢 ดัก Error: Failed to convert value to 'Response'
+          return new Response('', { status: 404, statusText: 'Not Found' });
         });
       })
   );
