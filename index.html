@@ -3530,12 +3530,13 @@
 if ('serviceWorker' in navigator) {
   // ✅ ลบ SW เก่าที่ scope ผิดออกก่อน
   navigator.serviceWorker.getRegistrations().then(registrations => {
-    registrations.forEach(reg => {
-      if (!reg.scope.includes('/wkk/')) {
-        reg.unregister();
-        console.log('[PWA] Unregistered old SW:', reg.scope);
-      }
-    });
+  registrations.forEach(reg => {
+    // ลบทุก scope ที่ไม่ตรงกับ /wkk/
+    if (!reg.scope.endsWith('/wkk/')) {
+      reg.unregister();
+      console.log('[PWA] Unregistered old SW:', reg.scope);
+    }
+  });
   });
 
   window.addEventListener('load', () => {
