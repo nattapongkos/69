@@ -1,22 +1,22 @@
 // =====================================================
 // 🔧 Student Portal — Service Worker (PWA)
 // =====================================================
-const CACHE_NAME = "student-portal-v4";
+const CACHE_NAME = "student-portal-v5";
 
 const STATIC_ASSETS = [
-  "./index.html",
-  "./submit-script.js",
-  "./submit-style.css",
-  "./manifest.json",
+  "/69/index.html",
+  "/69/submit-script.js",
+  "/69/submit-style.css",
+  "/69/manifest.json",
   "https://cdn.tailwindcss.com",
   "https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js",
-  "https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap",
+  "https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
 ];
 
 // 1. INSTALL — ดาวน์โหลด static assets
 self.addEventListener("install", (event) => {
   console.log("[SW] Installing...");
-  self.skipWaiting(); // บังคับให้อัปเดต SW ทันที
+  self.skipWaiting(); 
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return Promise.allSettled(
@@ -43,7 +43,7 @@ self.addEventListener("activate", (event) => {
           }
         })
       );
-    }).then(() => self.clients.claim())
+    }).then(() => self.clients.claim()) 
   );
 });
 
@@ -79,9 +79,8 @@ self.addEventListener("fetch", (event) => {
           if (cachedResponse) {
             return cachedResponse;
           }
-          // หากออฟไลน์และเป็นการขอไฟล์ HTML ให้คืนค่าหน้า index.html
           if (event.request.destination === "document") {
-            return caches.match("./index.html"); 
+            return caches.match("/69/index.html"); 
           }
           return new Response('', { status: 404, statusText: 'Not Found' });
         });
