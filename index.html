@@ -3237,32 +3237,37 @@
     </div>
 
 
-    <div id="missing-assignments-modal" class="modal-overlay fixed inset-0 flex items-center justify-center p-4 z-[400] hidden">
-      <div class="modal-box glass-panel p-6 sm:p-8 rounded-3xl w-full max-w-md relative overflow-hidden shadow-2xl max-h-[85vh] flex flex-col border border-white">
-        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-rose-400 to-red-500"></div>
-        <div class="flex justify-between items-start mb-6 shrink-0 relative z-10">
-          <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center shadow-sm shrink-0">
-              <i data-lucide="file-x-2" class="w-6 h-6 text-rose-500"></i>
-            </div>
-            <div>
-              <h3 class="text-xl font-black text-slate-800 font-outfit leading-tight tracking-tight">รายการงานค้าง 📝</h3>
-              <p class="text-[10px] text-slate-500 mt-0.5 font-bold uppercase tracking-wider">รีบส่งงานเพื่อสะสมเหรียญ!</p>
-            </div>
-          </div>
-          <button onclick="closeMissingAssignmentsModal()" class="text-slate-400 hover:text-rose-500 bg-slate-50 hover:bg-rose-50 p-2 rounded-lg transition-colors shrink-0">
-            <i data-lucide="x" class="w-5 h-5"></i>
-          </button>
+    <div id="missing-assignments-modal" class="modal-overlay fixed inset-0 flex items-center justify-center p-4 z-[400] hidden bg-black/40 backdrop-blur-sm">
+  <div class="modal-box bg-[#fffbfa] p-6 sm:p-8 w-full max-w-md relative overflow-hidden flex flex-col border-4 border-black rounded-3xl shadow-[8px_8px_0px_#000] transform transition-all max-h-[85vh]">
+    
+    <div class="absolute top-0 left-0 w-full h-4 bg-rose-500 border-b-4 border-black"></div>
+    
+    <div class="flex justify-between items-start mb-6 shrink-0 relative z-10 mt-2">
+      <div class="flex items-center gap-4">
+        <div class="w-14 h-14 bg-rose-100 border-2 border-black rounded-2xl flex items-center justify-center shadow-[4px_4px_0px_#000] shrink-0 overflow-hidden transform -rotate-6">
+          <img src="https://api.dicebear.com/7.x/bottts/svg?seed=MissingWorkBot&backgroundColor=ffe4e6" alt="Missing Work" class="w-full h-full object-cover p-1">
         </div>
-        
-        <div id="missing-assignments-list" class="flex-1 overflow-y-auto custom-scrollbar space-y-3 relative z-10 pr-1 pb-4">
-            </div>
-
-        <button onclick="closeMissingAssignmentsModal()" class="w-full mt-2 py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all relative z-10 uppercase tracking-widest hover:-translate-y-0.5">
-          ปิดหน้าต่าง
-        </button>
+        <div>
+          <h3 class="text-2xl font-black text-black leading-tight tracking-tight drop-shadow-sm">ภารกิจค้างส่ง! 📝</h3>
+          <p class="text-[11px] text-rose-700 mt-1 font-black uppercase tracking-wider bg-rose-100 inline-block px-2 py-0.5 rounded border border-black shadow-[2px_2px_0px_rgba(0,0,0,0.2)]">
+            รีบเคลียร์เควสต์รับเหรียญด่วน!
+          </p>
+        </div>
       </div>
+      
+      <button onclick="closeMissingAssignmentsModal()" class="text-black bg-white hover:bg-rose-200 w-10 h-10 flex items-center justify-center rounded-xl border-2 border-black shadow-[3px_3px_0px_#000] active:shadow-none active:translate-y-1 active:translate-x-1 transition-all shrink-0">
+        <i data-lucide="x" class="w-6 h-6 stroke-[3]"></i>
+      </button>
     </div>
+    
+    <div id="missing-assignments-list" class="flex-1 overflow-y-auto custom-scrollbar space-y-3 relative z-10 pr-2 pb-4 min-h-[100px]">
+        </div>
+
+    <button onclick="closeMissingAssignmentsModal()" class="w-full mt-2 py-3 rounded-2xl bg-amber-400 hover:bg-amber-500 text-black text-lg font-black transition-all relative z-10 uppercase tracking-widest border-4 border-black shadow-[4px_4px_0px_#000] hover:-translate-y-1 hover:shadow-[4px_6px_0px_#000] active:translate-y-1 active:translate-x-1 active:shadow-none flex items-center justify-center gap-2">
+       เข้าใจแล้ว! 👍
+    </button>
+  </div>
+</div>
 
 
 

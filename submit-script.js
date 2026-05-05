@@ -4026,6 +4026,7 @@ async function fetchWithCache(cacheKey, queryRef, expireMinutes = 5) {
 }
 
 
+
 // ==========================================
 // 🚨 ฟังก์ชันสำหรับหน้าต่าง งานที่ค้างส่ง (Missing Assignments)
 // ==========================================
@@ -4034,59 +4035,34 @@ function openMissingAssignmentsModal() {
     const listEl = document.getElementById("missing-assignments-list");
     
     if (globalMissingAssignments.length === 0) {
+        // กรณีไม่มีงานค้าง (ปรับเป็นธีมของเล่น)
         listEl.innerHTML = `
-            <div class="text-center py-8 bg-emerald-50 rounded-2xl border border-emerald-100">
-                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm">
-                    <i data-lucide="check-circle" class="w-8 h-8 text-emerald-500"></i>
+            <div class="text-center py-8 bg-[#fffbfa] rounded-2xl border-4 border-black shadow-[4px_4px_0px_#000] mt-2">
+                <div class="w-16 h-16 bg-emerald-100 border-2 border-black rounded-full flex items-center justify-center mx-auto mb-3 shadow-[2px_2px_0px_#000]">
+                    <i data-lucide="check-circle" class="w-8 h-8 text-emerald-500 stroke-[3]"></i>
                 </div>
-                <p class="font-bold text-emerald-700 text-lg">ยอดเยี่ยมมาก!</p>
-                <p class="text-xs text-emerald-600 font-medium">คุณไม่มีงานค้างส่งเลยในตอนนี้ 🎉</p>
+                <p class="font-black text-black text-lg">ยอดเยี่ยมมาก!</p>
+                <p class="text-xs text-slate-600 font-bold mt-1">ไม่มีเควสต์ค้างส่งเลยในตอนนี้ 🎉</p>
             </div>
         `;
     } else {
+        // กรณีมีงานค้าง (เอาปุ่มออก เปลี่ยนเป็นป้ายสถานะ)
         listEl.innerHTML = globalMissingAssignments.map(task => {
-            let actionHtml = "";
-            const taskName = task.name || "";
-
-            // 1. ตรวจสอบว่าเป็น สอบกลางภาค หรือ สอบปลายภาค
-            if (taskName.includes("สอบกลางภาค") || taskName.includes("สอบปลายภาค")) {
-                actionHtml = `
-                    <div class="shrink-0 bg-slate-100 text-slate-500 px-3 py-2.5 rounded-xl text-[10px] font-bold border border-slate-200 flex items-center gap-1.5 uppercase tracking-widest cursor-not-allowed">
-                        <i data-lucide="x-circle" class="w-3 h-3 text-slate-400"></i> ยังไม่ได้สอบ
-                    </div>
-                `;
-            } 
-            // 2. งานจาก Hub: เพิ่มคำว่า "ใบงาน" เข้าไปด้วย
-            else if (taskName.includes("แบบฝึกหัด") || taskName.includes("งานที่") || taskName.includes("แบบทดสอบ") || taskName.includes("บทเรียน") || taskName.includes("ใบงาน")) {
-                const targetUrl = taskName.includes("แบบทดสอบ") ? 'quiz-student.html' : 'materials-student.html';
-                
-                actionHtml = `
-                    <button onclick="goToClass('${targetUrl}')" class="shrink-0 bg-indigo-500 hover:bg-indigo-600 text-white px-3 py-2.5 rounded-xl text-[10px] font-bold transition-all shadow-sm hover:-translate-y-0.5 flex items-center gap-1.5 uppercase tracking-widest">
-                        ทำใน HUB <i data-lucide="external-link" class="w-3 h-3"></i>
-                    </button>
-                `;
-            }
-            // 3. งานปกติอื่นๆ (ให้แนบไฟล์ส่งผ่านระบบเหมือนเดิม)
-            else {
-                actionHtml = `
-                    <button onclick="goToSubmitMissingTask('${task.name}')" class="shrink-0 bg-rose-500 hover:bg-rose-600 text-white px-3 py-2.5 rounded-xl text-[10px] font-bold transition-all shadow-sm hover:-translate-y-0.5 flex items-center gap-1.5 uppercase tracking-widest">
-                        ส่งงาน <i data-lucide="arrow-right" class="w-3 h-3"></i>
-                    </button>
-                `;
-            }
-
             return `
-            <div class="flex justify-between items-center p-4 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-rose-200 hover:shadow-md transition-all group">
+            <div class="bg-white border-2 border-black p-3 rounded-2xl flex items-center justify-between shadow-[2px_2px_0px_#000] mb-3 hover:-translate-y-1 hover:shadow-[4px_4px_0px_#000] transition-all group">
                 <div class="flex gap-3 items-center min-w-0 flex-1 pr-2">
-                    <div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center text-rose-500 shrink-0 group-hover:bg-rose-500 group-hover:text-white transition-colors">
-                        <i data-lucide="file-clock" class="w-5 h-5"></i>
+                    <div class="w-10 h-10 rounded-xl bg-rose-100 border-2 border-black flex items-center justify-center text-rose-500 shrink-0 shadow-[2px_2px_0px_#000] transform -rotate-3 group-hover:rotate-0 transition-transform">
+                        <i data-lucide="file-clock" class="w-5 h-5 stroke-[3]"></i>
                     </div>
                     <div class="min-w-0 flex-1">
-                        <p class="text-sm font-bold text-slate-800 truncate leading-tight">${task.name}</p>
-                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">คะแนนเต็ม: <span class="text-rose-500">${task.max || 0}</span></p>
+                        <p class="text-sm font-black text-black truncate leading-tight">${task.name}</p>
+                        <p class="text-[10px] text-slate-600 font-bold uppercase tracking-wider mt-0.5">คะแนนเต็ม: <span class="text-rose-600 font-black">${task.max || 0}</span></p>
                     </div>
                 </div>
-                ${actionHtml}
+                
+                <div class="bg-rose-500 text-white border-2 border-black px-3 py-1.5 rounded-xl text-[11px] font-black shrink-0 shadow-[2px_2px_0px_#000] transform -rotate-2">
+                    ยังไม่ได้ส่ง ❌
+                </div>
             </div>
             `;
         }).join("");
